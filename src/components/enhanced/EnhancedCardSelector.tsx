@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Shuffle
 } from 'lucide-react';
+import { ModernCard, ModernButton } from '@/components/ui/modern';
 import { EnhancedCard, EnhancedCardSystem, CardCombo } from '@/lib/enhanced-card-system';
 
 interface EnhancedCardSelectorProps {
@@ -165,15 +166,15 @@ export function EnhancedCardSelector({
             <option value="type">タイプ順</option>
           </select>
 
-          <motion.button
+          <ModernButton
             onClick={generateRandomSelection}
-            className="px-4 py-2 bg-purple-500 text-white rounded-lg flex items-center gap-2 hover:bg-purple-600 text-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            variant="pokemon"
+            pokemonType="psychic"
+            size="sm"
+            icon={<Shuffle size={16} />}
           >
-            <Shuffle size={16} />
             おまかせ
-          </motion.button>
+          </ModernButton>
         </div>
       </div>
 
@@ -224,18 +225,17 @@ export function EnhancedCardSelector({
           const canSelect = selectedCards.length < maxSelection || isSelected;
 
           return (
-            <motion.div
+            <ModernCard
               key={card.id}
+              variant="pokemon"
+              pokemonType={card.type === 'training' ? 'fighting' : card.type === 'recovery' ? 'normal' : 'psychic'}
               className={`
-                relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300
-                ${getRarityColor(card.rarityLevel)}
+                relative cursor-pointer transition-all duration-300
                 ${isSelected ? 'ring-4 ring-indigo-300 scale-105' : ''}
-                ${!canSelect ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:scale-102'}
+                ${!canSelect ? 'opacity-50 cursor-not-allowed' : ''}
               `}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={canSelect ? { y: -5 } : {}}
+              hover={canSelect}
+              glowEffect={isSelected}
               onClick={() => canSelect && handleCardClick(card)}
               onMouseEnter={() => setHoveredCard(card.id)}
               onMouseLeave={() => setHoveredCard(null)}
@@ -396,7 +396,7 @@ export function EnhancedCardSelector({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </ModernCard>
           );
         })}
       </div>

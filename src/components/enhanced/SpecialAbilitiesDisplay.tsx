@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import { ModernCard, ModernButton } from '@/components/ui/modern';
 import { SpecialAbility, SpecialAbilitiesSystem } from '@/lib/special-abilities-system';
 
 interface SpecialAbilitiesDisplayProps {
@@ -170,13 +171,13 @@ export function SpecialAbilitiesDisplay({
       {/* 特能リスト */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {abilities.map((ability, index) => (
-          <motion.div
+          <ModernCard
             key={ability.id}
-            className={`border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${getRarityColor(ability.rarity)}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            whileHover={{ scale: 1.02 }}
+            variant="pokemon"
+            pokemonType={ability.type === 'offensive' ? 'fire' : ability.type === 'defensive' ? 'water' : ability.type === 'mental' ? 'psychic' : ability.type === 'physical' ? 'fighting' : 'steel'}
+            className="cursor-pointer"
+            hover={true}
+            glowEffect={hasTypeBonus(ability)}
             onClick={() => handleAbilityClick(ability)}
           >
             {/* 新特能習得アニメーション */}
@@ -310,7 +311,7 @@ export function SpecialAbilitiesDisplay({
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </ModernCard>
         ))}
       </div>
 
@@ -335,14 +336,15 @@ export function SpecialAbilitiesDisplay({
 
       {/* デバッグ用ボタン（開発時のみ） */}
       {process.env.NODE_ENV === 'development' && (
-        <motion.button
+        <ModernButton
           onClick={() => simulateNewAbilityAcquisition('power_serve')}
-          className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          variant="pokemon"
+          pokemonType="electric"
+          className="w-full"
+          icon={<span>🎭</span>}
         >
-          🎭 新特能習得をシミュレート（開発用）
-        </motion.button>
+          新特能習得をシミュレート（開発用）
+        </ModernButton>
       )}
     </div>
   );

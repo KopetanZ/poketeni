@@ -16,6 +16,7 @@ import {
   Calendar,
   Users
 } from 'lucide-react';
+import { ModernCard, ModernButton } from '@/components/ui/modern';
 import { AddictionSystem, AddictionSystemData, ContinuousPlayBonus } from '@/lib/addiction-system';
 import { EngagementAnalyzer } from '@/lib/addiction-system';
 
@@ -87,7 +88,7 @@ export function AddictiveGameplayDashboard({ playerData, onContinuePlay }: Addic
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 shadow-lg">
+    <ModernCard variant="gradient" padding="lg" className="shadow-2xl">
       {/* ヘッダー */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -246,13 +247,14 @@ export function AddictiveGameplayDashboard({ playerData, onContinuePlay }: Addic
 
       {/* 行動促進ボタン */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <motion.button
+        <ModernButton
           onClick={onContinuePlay}
-          className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:shadow-xl transition-shadow"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          variant="pokemon"
+          pokemonType="electric"
+          size="lg"
+          className="flex-1"
+          icon={<Users size={20} />}
         >
-          <Users size={20} />
           続けてプレイする
           <motion.div
             className="ml-2"
@@ -261,16 +263,15 @@ export function AddictiveGameplayDashboard({ playerData, onContinuePlay }: Addic
           >
             →
           </motion.div>
-        </motion.button>
+        </ModernButton>
 
-        <motion.button
-          className="bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 hover:shadow-xl transition-shadow"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+        <ModernButton
+          variant="secondary"
+          size="lg"
+          icon={<Clock size={20} />}
         >
-          <Clock size={20} />
           後で続きから
-        </motion.button>
+        </ModernButton>
       </div>
 
       {/* 復帰誘導メッセージ */}
@@ -284,6 +285,6 @@ export function AddictiveGameplayDashboard({ playerData, onContinuePlay }: Addic
           💡 <strong>監督からのメッセージ:</strong> {addictionSystem.generateRetentionMessage(addictionData)}
         </p>
       </motion.div>
-    </div>
+    </ModernCard>
   );
 }

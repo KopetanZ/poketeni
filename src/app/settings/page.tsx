@@ -100,7 +100,7 @@ export default function SettingsPage() {
                   {user?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <h3 className="font-bold text-lg">{user?.username || 'ユーザー'}</h3>
-                <p className="text-sm text-gray-600">{user?.email}</p>
+                <p className="text-sm text-gray-600">ID: {user?.id.slice(0, 8)}...</p>
               </div>
               
               <div className="space-y-2 text-sm">

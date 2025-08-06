@@ -121,9 +121,18 @@ export class StorageFallback {
         updated_at: new Date().toISOString()
       };
       localStorage.setItem(key, JSON.stringify(dateData));
-      console.log('School date updated in localStorage:', dateData);
+      console.log('🎯 School date updated in localStorage:', {
+        key,
+        dateData,
+        userId,
+        storage: 'localStorage'
+      });
+      
+      // 確認のために即座に読み込んでログ出力
+      const saved = localStorage.getItem(key);
+      console.log('✅ Verification - saved data:', saved ? JSON.parse(saved) : null);
     } catch (error) {
-      console.error('Failed to update school date in localStorage:', error);
+      console.error('❌ Failed to update school date in localStorage:', error);
     }
   }
 
@@ -132,13 +141,20 @@ export class StorageFallback {
     try {
       const key = `poke-tennis-school-date-${userId}`;
       const stored = localStorage.getItem(key);
+      console.log('🔍 Loading school date from localStorage:', {
+        key,
+        userId,
+        hasData: !!stored,
+        rawData: stored
+      });
+      
       if (!stored) return null;
 
       const data = JSON.parse(stored);
-      console.log('School date loaded from localStorage:', data);
+      console.log('📅 School date loaded successfully:', data);
       return data;
     } catch (error) {
-      console.error('Failed to load school date from localStorage:', error);
+      console.error('❌ Failed to load school date from localStorage:', error);
       return null;
     }
   }

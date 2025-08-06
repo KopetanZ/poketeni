@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { GameLayout } from '@/components/layout/GameLayout';
 import { EnhancedDashboardOverview } from '@/components/game/EnhancedDashboardOverview';
 import { YearProgressionDashboard } from '@/components/year-progression/YearProgressionDashboard';
+import { LocalStorageDebug } from '@/components/debug/LocalStorageDebug';
 import { useAuth } from '@/context/AuthContext';
 import { useYearProgressionLocal } from '@/hooks/useYearProgressionLocal';
 import { motion } from 'framer-motion';
@@ -75,6 +76,9 @@ export default function HomePage() {
         
         <EnhancedDashboardOverview />
       </div>
+      
+      {/* デバッグ情報 (開発用) */}
+      <LocalStorageDebug />
     </GameLayout>
   );
 }

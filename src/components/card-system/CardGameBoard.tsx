@@ -168,6 +168,13 @@ export function CardGameBoard({
       setGameProgress(updatedProgress);
 
       // 学校の日付も更新
+      console.log('🎯 About to update school date:', {
+        oldDate: { month: gameProgress.currentMonth, day: gameProgress.currentDay },
+        newDate: { month: newDate.month, day: newDate.day },
+        cardUsed: selectedCard.name,
+        userId: user.id,
+        useLocalStorage
+      });
       await updateSchoolDate(newDate.month, newDate.day);
 
       setSelectedCard(null);

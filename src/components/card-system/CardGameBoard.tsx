@@ -9,7 +9,7 @@ import { EventModal } from './EventModal';
 import { TrainingCard } from './TrainingCard';
 import { CardGenerator } from '@/lib/card-system/card-generator';
 import { MapGenerator } from '@/lib/card-system/map-generator';
-import { useGameProgressFallback } from '@/hooks/useGameProgressFallback';
+import { useGameProgressLocal } from '@/hooks/useGameProgressLocal';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { StorageFallback } from '@/lib/storage-fallback';
@@ -34,7 +34,7 @@ export function CardGameBoard({
 }: CardGameBoardProps) {
   const { user } = useAuth();
   
-  // Supabaseとの連携（フォールバック対応）
+  // ローカルストレージ専用データ管理
   const {
     gameProgress: savedGameProgress,
     seasonMap: savedSeasonMap,
@@ -45,7 +45,7 @@ export function CardGameBoard({
     saveSeasonMap,
     recordEvent,
     initializeGameProgress
-  } = useGameProgressFallback();
+  } = useGameProgressLocal();
 
   // ローカル状態
   const [gameProgress, setGameProgress] = useState<GameProgress | null>(null);

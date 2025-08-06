@@ -17,26 +17,12 @@ export function useGameProgressFallback() {
   const [error, setError] = useState<string | null>(null);
   const [useLocalStorage, setUseLocalStorage] = useState(false);
 
-  // データベーステーブル存在チェック
+  // データベーステーブル存在チェック（常にローカルストレージを使用）
   useEffect(() => {
-    const checkDatabase = async () => {
-      if (!user) return;
-
-      const gameProgressExists = await checkTableExists('game_progress');
-      const seasonMapsExists = await checkTableExists('season_maps');
-      
-      console.log('Database table check:', {
-        game_progress: gameProgressExists,
-        season_maps: seasonMapsExists
-      });
-
-      if (!gameProgressExists || !seasonMapsExists) {
-        console.log('Falling back to localStorage due to missing tables');
-        setUseLocalStorage(true);
-      }
-    };
-
-    checkDatabase();
+    if (user) {
+      console.log('Using localStorage for all card game data due to database issues');
+      setUseLocalStorage(true);
+    }
   }, [user]);
 
   // データ読み込み
@@ -73,12 +59,21 @@ export function useGameProgressFallback() {
       }
     } catch (err: any) {
       console.error('Failed to load data:', err);
-      setError(err.message);
       
-      // データベースエラーの場合はローカルストレージにフォールバック
+      // データベースエラーの場合は常にローカルストレージにフォールバック
       if (!useLocalStorage) {
+        console.log('Database error, switching to localStorage');
         setUseLocalStorage(true);
-        return;
+        
+        // ローカルストレージからデータを読み込み直し
+        const progress = StorageFallback.loadGameProgress(user?.id || '');
+        const map = StorageFallback.loadSeasonMap(user?.id || '');
+        setGameProgress(progress);
+        setSeasonMap(map);
+        
+        setError(null); // エラーをクリア
+      } else {
+        setError('ローカルストレージからのデータ読み込みに失敗しました');
       }
     } finally {
       setLoading(false);
@@ -313,6 +308,8 @@ export function useGameProgressFallback() {
 
     const initialMap = MapGenerator.generateSeasonMap(1, 0);
 
+    // 常にローカルストレージを使用
+    setUseLocalStorage(true);
     await saveGameProgress(initialProgress);
     await saveSeasonMap(initialMap);
 

@@ -72,6 +72,7 @@ export function YearProgressionDashboard() {
   const schoolProgress = {
     totalMonths: 36, // 3年 x 12ヶ月
     currentMonth: currentMonthIndex,
+    currentYear: currentSchool?.current_year || 1,
     monthsRemaining: Math.max(0, 36 - currentMonthIndex),
     progressPercentage: Math.round((currentMonthIndex / 36) * 100)
   };

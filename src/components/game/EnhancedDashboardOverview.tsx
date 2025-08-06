@@ -27,10 +27,14 @@ import { getPokemonImageUrl } from '@/lib/pokemon-api';
 import Link from 'next/link';
 
 export function EnhancedDashboardOverview() {
+  console.log('🏠 EnhancedDashboardOverview コンポーネント読み込み');
+  
   const { players, loading: playersLoading, getPlayerStats, getTopPlayers } = usePlayerData();
   const { getMatchStatistics } = useMatchData();
   const { currentSchool, getMonthName } = useYearProgressionLocal();
   const [activeTab, setActiveTab] = useState<'overview' | 'team' | 'stats'>('overview');
+  
+  console.log('🏫 現在の学校データ:', currentSchool);
 
   const playerStats = getPlayerStats();
   const matchStats = getMatchStatistics();
@@ -190,11 +194,19 @@ export function EnhancedDashboardOverview() {
               {/* 栄冠ナイン式カードゲームボード */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">月次進行ゲーム</h3>
+                {(() => {
+                  console.log('🎲 CardGameBoard描画:', {
+                    reputation: currentSchool?.reputation || 0,
+                    year: currentSchool?.current_year || 1,
+                    hasCurrentSchool: !!currentSchool
+                  });
+                  return null;
+                })()}
                 <CardGameBoard 
                   initialReputation={currentSchool?.reputation || 0}
                   initialYear={currentSchool?.current_year || 1}
                   onGameStateChange={(gameState) => {
-                    console.log('Game state updated:', gameState);
+                    console.log('🔄 Game state updated:', gameState);
                   }}
                 />
               </div>

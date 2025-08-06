@@ -58,10 +58,20 @@ export function CardGameBoard({
 
   // 初期化（Supabaseからデータを読み込み）
   useEffect(() => {
+    console.log('🚀 CardGameBoard初期化:', {
+      hasSavedGameProgress: !!savedGameProgress,
+      hasSavedSeasonMap: !!savedSeasonMap,
+      progressLoading,
+      useLocalStorage,
+      userId: user?.id
+    });
+    
     if (savedGameProgress && savedSeasonMap) {
+      console.log('📚 既存データを読み込み');
       setGameProgress(savedGameProgress);
       setSeasonMap(savedSeasonMap);
     } else if (!progressLoading && !savedGameProgress && !savedSeasonMap) {
+      console.log('🆕 初回プレイのため初期化開始');
       // 初回プレイ時の初期化
       initializeNewGame();
     }
@@ -107,14 +117,45 @@ export function CardGameBoard({
   };
 
   const handleCardSelect = (card: TrainingCardType) => {
-    if (!gameProgress?.isCardSelectionPhase || isProcessing) return;
+    console.log('🃏 カード選択:', {
+      cardName: card.name,
+      cardId: card.id,
+      isCardSelectionPhase: gameProgress?.isCardSelectionPhase,
+      isProcessing,
+      canSelect: !(!gameProgress?.isCardSelectionPhase || isProcessing)
+    });
     
+    if (!gameProgress?.isCardSelectionPhase || isProcessing) {
+      console.log('❌ カード選択不可:', {
+        reason: !gameProgress?.isCardSelectionPhase ? 'not in card selection phase' : 'processing'
+      });
+      return;
+    }
+    
+    console.log('✅ カード選択成功');
     setSelectedCard(prev => prev?.id === card.id ? null : card);
   };
 
   const handleCardPlay = async () => {
-    if (!selectedCard || !seasonMap || !gameProgress || isProcessing) return;
+    console.log('🎮 カードプレイ開始:', {
+      hasSelectedCard: !!selectedCard,
+      hasSeasonMap: !!seasonMap,
+      hasGameProgress: !!gameProgress,
+      isProcessing,
+      selectedCardName: selectedCard?.name
+    });
+    
+    if (!selectedCard || !seasonMap || !gameProgress || isProcessing) {
+      console.log('❌ カードプレイ不可:', {
+        hasSelectedCard: !!selectedCard,
+        hasSeasonMap: !!seasonMap,
+        hasGameProgress: !!gameProgress,
+        isProcessing
+      });
+      return;
+    }
 
+    console.log('⚡ カードプレイ実行開始');
     setIsProcessing(true);
     
     try {

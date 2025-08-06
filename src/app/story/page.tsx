@@ -43,6 +43,7 @@ export default function StoryPage() {
       title: 'ライバル校との出会い',
       description: '強豪校の監督と出会い、激しいライバル関係が始まります。',
       isUnlocked: false,
+      isCompleted: false,
       requiredLevel: 10,
       rewards: ['特殊能力解放', '新施設']
     },
@@ -51,6 +52,7 @@ export default function StoryPage() {
       title: '全国への道',
       description: '県大会を勝ち抜き、ついに全国大会への切符を手に入れる時が来ました。',
       isUnlocked: false,
+      isCompleted: false,
       requiredLevel: 20,
       rewards: ['レジェンダリーカード', '特別コーチ']
     }

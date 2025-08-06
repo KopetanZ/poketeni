@@ -68,10 +68,12 @@ export function YearProgressionDashboard() {
   }
 
   // 簡易的な進行状況（ローカルストレージモード）
+  const currentMonthIndex = ((currentSchool?.current_year || 1) - 1) * 12 + (currentSchool?.current_month || 4);
   const schoolProgress = {
     totalMonths: 36, // 3年 x 12ヶ月
-    currentMonth: ((currentSchool?.current_year || 1) - 1) * 12 + (currentSchool?.current_month || 4),
-    progressPercentage: Math.round((((currentSchool?.current_year || 1) - 1) * 12 + (currentSchool?.current_month || 4)) / 36 * 100)
+    currentMonth: currentMonthIndex,
+    monthsRemaining: Math.max(0, 36 - currentMonthIndex),
+    progressPercentage: Math.round((currentMonthIndex / 36) * 100)
   };
   
   const highPriorityEvents = pendingEvents.filter((e: any) => e.priority === 'high');

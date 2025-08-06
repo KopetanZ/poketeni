@@ -10,6 +10,8 @@ import { TrainingCard } from './TrainingCard';
 import { CardGenerator } from '@/lib/card-system/card-generator';
 import { MapGenerator } from '@/lib/card-system/map-generator';
 import { useGameProgress } from '@/hooks/useGameProgress';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 import type { 
   TrainingCard as TrainingCardType, 
   CardHand as CardHandType, 
@@ -29,6 +31,8 @@ export function CardGameBoard({
   initialYear = 1, 
   onGameStateChange 
 }: CardGameBoardProps) {
+  const { user } = useAuth();
+  
   // Supabaseとの連携
   const {
     gameProgress: savedGameProgress,
@@ -161,6 +165,9 @@ export function CardGameBoard({
       await saveGameProgress(updatedProgress);
       setGameProgress(updatedProgress);
 
+      // 学校の日付も更新
+      await updateSchoolDate(newDate.month, newDate.day);
+
       setSelectedCard(null);
 
       // 移動アニメーション
@@ -291,6 +298,24 @@ export function CardGameBoard({
       month: (month % 12) + 1,
       day: remainingDays + 1
     };
+  };
+
+  const updateSchoolDate = async (month: number, day: number) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('schools')
+        .update({
+          current_month: month,
+          current_day: day
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating school date:', error);
+    }
   };
 
   const handleDrawCards = async () => {

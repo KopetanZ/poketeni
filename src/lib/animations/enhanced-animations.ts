@@ -538,13 +538,13 @@ export class EnhancedAnimations {
    */
   combineAnimations(...presets: Partial<AnimationPreset>[]): AnimationPreset {
     return presets.reduce((combined, preset) => ({
-      initial: { ...combined.initial, ...preset.initial },
-      animate: { ...combined.animate, ...preset.animate },
-      exit: { ...combined.exit, ...preset.exit },
-      transition: { ...combined.transition, ...preset.transition },
-      whileHover: { ...combined.whileHover, ...preset.whileHover },
-      whileTap: { ...combined.whileTap, ...preset.whileTap },
-      whileFocus: { ...combined.whileFocus, ...preset.whileFocus }
+      initial: { ...combined.initial, ...(preset.initial || {}) },
+      animate: { ...combined.animate, ...(preset.animate || {}) },
+      exit: { ...combined.exit, ...(preset.exit || {}) },
+      transition: { ...combined.transition, ...(preset.transition || {}) },
+      whileHover: { ...combined.whileHover, ...(preset.whileHover || {}) },
+      whileTap: { ...combined.whileTap, ...(preset.whileTap || {}) },
+      whileFocus: { ...combined.whileFocus, ...(preset.whileFocus || {}) }
     }), {
       initial: {},
       animate: {},
@@ -553,7 +553,7 @@ export class EnhancedAnimations {
       whileHover: {},
       whileTap: {},
       whileFocus: {}
-    });
+    }) as AnimationPreset;
   }
 
   /**
@@ -589,7 +589,7 @@ export class EnhancedAnimations {
       ...animation,
       transition: {
         ...animation.transition,
-        duration: animation.transition?.duration ? animation.transition.duration / speedMultiplier : 0.3 / speedMultiplier
+        duration: 0.3 / speedMultiplier
       }
     };
   }

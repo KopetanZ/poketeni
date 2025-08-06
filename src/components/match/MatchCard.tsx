@@ -14,14 +14,16 @@ import {
   Award
 } from 'lucide-react';
 
+import type { MatchType } from '@/types/game';
+
 interface Match {
   id: string;
   opponent_school: string;
   match_date: string;
-  match_type: 'practice' | 'tournament' | 'championship';
+  match_type: MatchType;
   difficulty: number; // 1-5
   venue: 'home' | 'away' | 'neutral';
-  status: 'scheduled' | 'in_progress' | 'completed';
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   result?: 'win' | 'lose' | 'draw';
   score?: {
     our_points: number;
@@ -52,15 +54,27 @@ export function MatchCard({ match, onJoin, onViewResult, compact = false }: Matc
           color: 'bg-blue-100 text-blue-700',
           icon: Target
         };
-      case 'tournament':
+      case 'prefecture_preliminary':
         return {
-          label: 'トーナメント',
+          label: '県予選',
+          color: 'bg-green-100 text-green-700',
+          icon: Trophy
+        };
+      case 'prefecture_main':
+        return {
+          label: '県大会',
           color: 'bg-purple-100 text-purple-700',
           icon: Trophy
         };
-      case 'championship':
+      case 'regional':
         return {
-          label: '選手権',
+          label: '地区大会',
+          color: 'bg-orange-100 text-orange-700',
+          icon: Award
+        };
+      case 'national':
+        return {
+          label: '全国大会',
           color: 'bg-yellow-100 text-yellow-700',
           icon: Award
         };

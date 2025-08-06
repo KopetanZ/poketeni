@@ -9,20 +9,19 @@ import { PlayerList } from '@/components/player/PlayerList';
 import { useAuth } from '@/context/AuthContext';
 import { usePlayerData } from '@/hooks/usePlayerData';
 import { useMatchData } from '@/hooks/useMatchData';
-import { MatchResultModal } from '@/components/match/MatchResultModal';
 import { supabase } from '@/lib/supabase';
 import { Trophy, Calendar, Users, Plus, Filter, ArrowLeft, Zap } from 'lucide-react';
-import type { Player, School, Match } from '@/types/game';
+import type { Player, School, Match as FullMatch, MatchType } from '@/types/game';
 
-// 簡単な試合用の一時的なインターフェース（後で削除予定）
+// 簡単な試合用のインターフェース
 interface SimpleMatch {
   id: string;
   opponent_school: string;
   match_date: string;
-  match_type: 'practice' | 'tournament' | 'championship';
+  match_type: MatchType;
   difficulty: number;
   venue: 'home' | 'away' | 'neutral';
-  status: 'scheduled' | 'in_progress' | 'completed';
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   result?: 'win' | 'lose' | 'draw';
   score?: {
     our_points: number;
@@ -68,7 +67,7 @@ export default function MatchesPage() {
   const [currentView, setCurrentView] = useState<'list' | 'team-selection' | 'simulation' | 'quick-match'>('list');
   const [matches, setMatches] = useState<SimpleMatch[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<SimpleMatch | null>(null);
-  const [selectedRealMatch, setSelectedRealMatch] = useState<Match | null>(null);
+  const [selectedRealMatch, setSelectedRealMatch] = useState<SimpleMatch | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [quickMatchPlayers, setQuickMatchPlayers] = useState<Player[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
@@ -119,10 +118,10 @@ export default function MatchesPage() {
       '太陽中学', '流星学園', '雲海高校', '森林中学', '花咲学院'
     ];
 
-    const matchTypes: Array<'practice' | 'tournament' | 'championship'> = ['practice', 'tournament', 'championship'];
+    const matchTypes: Array<'practice' | 'prefecture_preliminary' | 'prefecture_main'> = ['practice', 'prefecture_preliminary', 'prefecture_main'];
     const venues: Array<'home' | 'away' | 'neutral'> = ['home', 'away', 'neutral'];
 
-    const generatedMatches: Match[] = [];
+    const generatedMatches: SimpleMatch[] = [];
 
     for (let i = 0; i < 10; i++) {
       const opponent = opponentSchools[Math.floor(Math.random() * opponentSchools.length)];
@@ -148,7 +147,7 @@ export default function MatchesPage() {
         };
       }
 
-      const match: Match = {
+      const match: SimpleMatch = {
         id: `match-${i}`,
         opponent_school: opponent,
         match_date: date.toISOString(),
@@ -172,7 +171,7 @@ export default function MatchesPage() {
     setLoading(false);
   };
 
-  const handleJoinMatch = (match: Match) => {
+  const handleJoinMatch = (match: SimpleMatch) => {
     setSelectedMatch(match);
     setCurrentView('team-selection');
   };
@@ -285,7 +284,7 @@ export default function MatchesPage() {
   };
 
   // 試合結果詳細表示
-  const handleViewMatchResult = (match: Match) => {
+  const handleViewMatchResult = (match: SimpleMatch) => {
     setSelectedRealMatch(match);
     setIsResultModalOpen(true);
   };
@@ -454,7 +453,27 @@ export default function MatchesPage() {
                         </div>
                         
                         <button
-                          onClick={() => handleViewMatchResult(match)}
+                          onClick={() => {
+                            // FullMatchをSimpleMatchに変換
+                            const simpleMatch: SimpleMatch = {
+                              id: match.id,
+                              opponent_school: match.away_school_id || '対戦相手',
+                              match_date: match.scheduled_at,
+                              match_type: match.match_type,
+                              difficulty: 3, // デフォルト値
+                              venue: 'home', // デフォルト値
+                              status: match.status === 'scheduled' ? 'scheduled' : 
+                                     match.status === 'in_progress' ? 'in_progress' : 'completed',
+                              result: match.winner_school_id ? 
+                                     (match.winner_school_id === match.home_school_id ? 'win' : 'lose') : 
+                                     undefined,
+                              score: match.final_score ? {
+                                our_points: parseInt(match.final_score.split('-')[0] || '0'),
+                                opponent_points: parseInt(match.final_score.split('-')[1] || '0')
+                              } : undefined
+                            };
+                            handleViewMatchResult(simpleMatch);
+                          }}
                           className="text-poke-blue-600 hover:text-poke-blue-800 text-sm font-medium"
                         >
                           詳細を見る
@@ -619,17 +638,26 @@ export default function MatchesPage() {
           />
         )}
 
-        {/* 試合結果詳細モーダル */}
-        <MatchResultModal
-          isOpen={isResultModalOpen}
-          match={selectedRealMatch}
-          homePlayer={selectedRealMatch ? players.find(p => p.pokemon_id.toString() === selectedRealMatch.match_log?.[0]?.details?.players?.[0]) || null : null}
-          awayPlayer={selectedRealMatch ? players.find(p => p.pokemon_id.toString() === selectedRealMatch.match_log?.[0]?.details?.players?.[1]) || null : null}
-          onClose={() => {
-            setIsResultModalOpen(false);
-            setSelectedRealMatch(null);
-          }}
-        />
+        {/* 試合結果詳細モーダル (簡易版) */}
+        {selectedRealMatch && isResultModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold mb-4">試合結果</h3>
+              <p className="mb-2">対戦相手: {selectedRealMatch.opponent_school}</p>
+              <p className="mb-2">日時: {new Date(selectedRealMatch.match_date).toLocaleDateString('ja-JP')}</p>
+              <p className="mb-4">結果: {selectedRealMatch.result === 'win' ? '勝利' : selectedRealMatch.result === 'lose' ? '敗北' : '引き分け'}</p>
+              <button
+                onClick={() => {
+                  setIsResultModalOpen(false);
+                  setSelectedRealMatch(null);
+                }}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </GameLayout>
   );

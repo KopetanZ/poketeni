@@ -156,9 +156,9 @@ export function MatchResultModal({
                   <div className="bg-green-50 rounded-lg p-4 text-center">
                     <Target className="w-6 h-6 mx-auto mb-2 text-green-600" />
                     <div className="text-lg font-bold text-green-900">
-                      {match.statistics?.total_games || 0}
+                      {match.statistics?.total_aces || 0}
                     </div>
-                    <div className="text-sm text-green-700">総ゲーム数</div>
+                    <div className="text-sm text-green-700">エース数</div>
                   </div>
 
                   <div className="bg-purple-50 rounded-lg p-4 text-center">
@@ -212,23 +212,8 @@ export function MatchResultModal({
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>獲得ゲーム:</span>
-                        <span className="font-medium">{match.statistics?.player1_stats?.games_won || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>獲得セット:</span>
-                        <span className="font-medium">{match.statistics?.player1_stats?.sets_won || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>エース:</span>
-                        <span className="font-medium">{match.statistics?.player1_stats?.aces || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>ウィナー:</span>
-                        <span className="font-medium">{match.statistics?.player1_stats?.winners || 0}</span>
-                      </div>
+                    <div className="text-center text-sm text-gray-600">
+                      {isHomeWinner ? '勝利プレイヤーとして活躍しました！' : '健闘しました！'}
                     </div>
                   </div>
 
@@ -246,23 +231,8 @@ export function MatchResultModal({
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>獲得ゲーム:</span>
-                        <span className="font-medium">{match.statistics?.player2_stats?.games_won || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>獲得セット:</span>
-                        <span className="font-medium">{match.statistics?.player2_stats?.sets_won || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>エース:</span>
-                        <span className="font-medium">{match.statistics?.player2_stats?.aces || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>ウィナー:</span>
-                        <span className="font-medium">{match.statistics?.player2_stats?.winners || 0}</span>
-                      </div>
+                    <div className="text-center text-sm text-gray-600">
+                      {!isHomeWinner ? '勝利プレイヤーとして活躍しました！' : '健闘しました！'}
                     </div>
                   </div>
                 </div>
@@ -273,60 +243,23 @@ export function MatchResultModal({
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold">詳細統計</h3>
                 
-                {/* 統計比較 */}
-                <div className="space-y-4">
-                  {[
-                    { 
-                      label: 'エース数', 
-                      player1: match.statistics?.player1_stats?.aces || 0,
-                      player2: match.statistics?.player2_stats?.aces || 0
-                    },
-                    { 
-                      label: 'ウィナー数', 
-                      player1: match.statistics?.player1_stats?.winners || 0,
-                      player2: match.statistics?.player2_stats?.winners || 0
-                    },
-                    { 
-                      label: 'アンフォーストエラー', 
-                      player1: match.statistics?.player1_stats?.unforced_errors || 0,
-                      player2: match.statistics?.player2_stats?.unforced_errors || 0
-                    },
-                    { 
-                      label: '獲得ゲーム数', 
-                      player1: match.statistics?.player1_stats?.games_won || 0,
-                      player2: match.statistics?.player2_stats?.games_won || 0
-                    }
-                  ].map((stat, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">{stat.label}</span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 items-center">
-                        <div className="text-right">
-                          <div className="text-xl font-bold">{stat.player1}</div>
-                          <div className="text-xs text-gray-600">{homePlayer.pokemon_name}</div>
-                        </div>
-                        <div className="flex space-x-1">
-                          <div 
-                            className="h-2 bg-blue-500 rounded"
-                            style={{ 
-                              width: `${stat.player1 + stat.player2 > 0 ? (stat.player1 / (stat.player1 + stat.player2)) * 100 : 50}%` 
-                            }}
-                          />
-                          <div 
-                            className="h-2 bg-red-500 rounded"
-                            style={{ 
-                              width: `${stat.player1 + stat.player2 > 0 ? (stat.player2 / (stat.player1 + stat.player2)) * 100 : 50}%` 
-                            }}
-                          />
-                        </div>
-                        <div className="text-left">
-                          <div className="text-xl font-bold">{stat.player2}</div>
-                          <div className="text-xs text-gray-600">{awayPlayer.pokemon_name}</div>
-                        </div>
-                      </div>
+                {/* 基本統計 */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4">試合統計</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span>総エース数:</span>
+                      <span className="font-bold">{match.statistics?.total_aces || 0}</span>
                     </div>
-                  ))}
+                    <div className="flex justify-between">
+                      <span>ウィナー数:</span>
+                      <span className="font-bold">{match.statistics?.winners || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>エラー数:</span>
+                      <span className="font-bold">{match.statistics?.unforced_errors || 0}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

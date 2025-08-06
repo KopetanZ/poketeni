@@ -15,12 +15,12 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react';
-import type { Player } from '@/types/game';
+import type { Player, MatchType } from '@/types/game';
 
 interface MatchSimulationProps {
   ourTeam: Player[];
   opponentSchool: string;
-  matchType: 'practice' | 'tournament' | 'championship';
+  matchType: MatchType;
   onComplete: (result: MatchResult) => void;
   onCancel: () => void;
 }

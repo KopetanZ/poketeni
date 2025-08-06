@@ -126,7 +126,14 @@ export function useGameProgress() {
           year: mapData.year,
           totalDays: mapData.total_days,
           panels: mapData.panels,
-          fixedEvents: mapData.fixed_events
+          fixedEvents: mapData.fixed_events,
+          randomPanelDistribution: mapData.random_panel_distribution || {
+            good_event: 20,
+            bad_event: 10,
+            normal: 50,
+            special_training: 15,
+            character: 5
+          }
         };
         setSeasonMap(map);
       }

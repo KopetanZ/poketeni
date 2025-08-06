@@ -93,7 +93,15 @@ export class CSS3DTransforms {
         { transform: 'rotateX(180deg)', offset: 1 }
       ];
 
-      const animation = element.animate(keyframes, animationConfig);
+      const webAnimationConfig = {
+        duration: animationConfig.duration,
+        easing: animationConfig.easing,
+        delay: animationConfig.delay,
+        iterations: animationConfig.iterations === 'infinite' ? Number.POSITIVE_INFINITY : animationConfig.iterations,
+        direction: animationConfig.direction,
+        fill: animationConfig.fillMode
+      };
+      const animation = element.animate(keyframes, webAnimationConfig);
       animation.onfinish = () => resolve();
     });
   }
@@ -291,7 +299,15 @@ export class CSS3DTransforms {
           ];
       }
 
-      const animation = element.animate(keyframes, animationConfig);
+      const webAnimationConfig = {
+        duration: animationConfig.duration,
+        easing: animationConfig.easing,
+        delay: animationConfig.delay,
+        iterations: animationConfig.iterations === 'infinite' ? Number.POSITIVE_INFINITY : animationConfig.iterations,
+        direction: animationConfig.direction,
+        fill: animationConfig.fillMode
+      };
+      const animation = element.animate(keyframes, webAnimationConfig);
       animation.onfinish = () => resolve();
     });
   }
@@ -458,7 +474,15 @@ export class CSS3DTransforms {
         }
       ];
 
-      const animation = element.animate(keyframes, animationConfig);
+      const webAnimationConfig = {
+        duration: animationConfig.duration,
+        easing: animationConfig.easing,
+        delay: animationConfig.delay,
+        iterations: animationConfig.iterations === 'infinite' ? Number.POSITIVE_INFINITY : animationConfig.iterations,
+        direction: animationConfig.direction,
+        fill: animationConfig.fillMode
+      };
+      const animation = element.animate(keyframes, webAnimationConfig);
       animation.onfinish = () => resolve();
     });
   }
@@ -468,7 +492,7 @@ export class CSS3DTransforms {
    */
   stopAnimation(element: HTMLElement, animationName?: string): void {
     if (animationName) {
-      element.style.animation = element.style.animation.replaceAll(animationName, '');
+      element.style.animation = element.style.animation.replace(new RegExp(animationName, 'g'), '');
     } else {
       element.style.animation = '';
     }

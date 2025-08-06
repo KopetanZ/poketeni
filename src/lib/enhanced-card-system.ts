@@ -6,6 +6,8 @@ import { TrainingCard } from '@/types/card-system';
 
 export interface EnhancedCard extends TrainingCard {
   // 栄冠ナインスタイルの要素
+  cost: number; // カード使用コスト
+  effects: { type: string; value: number }[]; // カード効果
   practiceEfficiency: number; // 練習効率倍率
   experienceMultiplier: number; // 経験値倍率
   comboEffects: CardCombo[]; // カード組み合わせ効果
@@ -65,6 +67,11 @@ export class EnhancedCardSystem {
       description: '厳しいサーブ練習。効果は高いが怪我のリスクも',
       type: 'training',
       rarity: 'rare',
+      number: 3,
+      trainingEffects: {
+        serve: 25,
+        stamina: -5
+      },
       cost: 15,
       effects: [
         { type: 'serve_power', value: 25 },
@@ -105,6 +112,11 @@ export class EnhancedCardSystem {
       description: 'ビデオ分析や戦術の勉強。知性が向上する',
       type: 'training',
       rarity: 'uncommon',
+      number: 2,
+      trainingEffects: {
+        stroke: 15,
+        mental: 10
+      },
       cost: 8,
       effects: [
         { type: 'technique', value: 15 },
@@ -145,6 +157,8 @@ export class EnhancedCardSystem {
       description: 'チームメンバーとの絆を深める。士気が大幅向上',
       type: 'event',
       rarity: 'rare',
+      number: 1,
+      trainingEffects: {},
       cost: 12,
       effects: [
         { type: 'team_chemistry', value: 30 },
@@ -183,8 +197,17 @@ export class EnhancedCardSystem {
       id: 'legendary_coach_visit',
       name: '伝説の指導者来校',
       description: 'テニス界のレジェンドが特別指導してくれる超レアイベント',
-      type: 'special_event',
+      type: 'special',
       rarity: 'legendary',
+      number: 6,
+      trainingEffects: {
+        serve: 20,
+        return: 20,
+        volley: 20,
+        stroke: 20,
+        mental: 20,
+        stamina: 20
+      },
       cost: 0, // コストなし（超レア）
       effects: [
         { type: 'all_stats', value: 20 },
@@ -213,8 +236,12 @@ export class EnhancedCardSystem {
       id: 'injury_recovery',
       name: '怪我治療・回復',
       description: '医師による治療とリハビリ。怪我リスクを軽減',
-      type: 'recovery',
+      type: 'special',
       rarity: 'common',
+      number: 1,
+      trainingEffects: {
+        stamina: 15
+      },
       cost: 5,
       effects: [
         { type: 'injury_heal', value: 100 },
@@ -488,8 +515,12 @@ export class EnhancedCardSystem {
         id: 'summer_festival_training',
         name: '夏祭り特訓',
         description: '夏祭りの雰囲気の中での特別練習',
-        type: 'special_event',
-        rarity: 'super_rare',
+        type: 'special',
+        rarity: 'rare',
+        number: 3,
+        trainingEffects: {
+          stamina: 20
+        },
         cost: 10,
         effects: [
           { type: 'stamina', value: 20 },

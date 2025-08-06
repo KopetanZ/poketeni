@@ -8,7 +8,9 @@ export { ParticlesSystem } from '@/lib/3d-effects/particles-system';
 export { CSS3DTransforms } from '@/lib/3d-effects/css-3d-transforms';
 export type { 
   Particle, 
-  ParticleEmitter,
+  ParticleEmitter
+} from '@/lib/3d-effects/particles-system';
+export type { 
   Transform3D,
   AnimationConfig 
-} from '@/lib/3d-effects/particles-system';
+} from '@/lib/3d-effects/css-3d-transforms';

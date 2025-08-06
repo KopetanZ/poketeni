@@ -447,32 +447,48 @@ async function updatePlayerStats(
   const winner = matchState.winner === 1 ? player1Id : player2Id;
   const loser = matchState.winner === 1 ? player2Id : player1Id;
   
-  // 勝者の統計更新
-  await supabase
+  // 勝者の統計更新（簡易実装）
+  const { data: winnerData } = await supabase
     .from('players')
-    .update({
-      matches_played: supabase.raw('matches_played + 1'),
-      matches_won: supabase.raw('matches_won + 1'),
-      sets_won: supabase.raw(`sets_won + ${matchState.winner === 1 ? statistics.player1_stats.sets_won : statistics.player2_stats.sets_won}`),
-      sets_lost: supabase.raw(`sets_lost + ${matchState.winner === 1 ? statistics.player2_stats.sets_won : statistics.player1_stats.sets_won}`),
-      experience: supabase.raw(`experience + ${experienceGain + 10}`), // 勝利ボーナス
-      physical_fatigue: supabase.raw(`LEAST(100, physical_fatigue + ${fatigueGain})`),
-      mental_fatigue: supabase.raw(`LEAST(100, mental_fatigue + ${Math.floor(fatigueGain * 0.8)})`),
-      motivation: supabase.raw(`LEAST(100, motivation + 10)`) // 勝利でモチベーションアップ
-    })
-    .eq('id', winner);
+    .select('matches_played, matches_won, sets_won, sets_lost, experience, physical_fatigue, mental_fatigue, motivation')
+    .eq('id', winner)
+    .single();
+    
+  if (winnerData) {
+    await supabase
+      .from('players')
+      .update({
+        matches_played: (winnerData.matches_played || 0) + 1,
+        matches_won: (winnerData.matches_won || 0) + 1,
+        sets_won: (winnerData.sets_won || 0) + (matchState.winner === 1 ? statistics.player1_stats.sets_won : statistics.player2_stats.sets_won),
+        sets_lost: (winnerData.sets_lost || 0) + (matchState.winner === 1 ? statistics.player2_stats.sets_won : statistics.player1_stats.sets_won),
+        experience: (winnerData.experience || 0) + experienceGain + 10, // 勝利ボーナス
+        physical_fatigue: Math.min(100, (winnerData.physical_fatigue || 0) + fatigueGain),
+        mental_fatigue: Math.min(100, (winnerData.mental_fatigue || 0) + Math.floor(fatigueGain * 0.8)),
+        motivation: Math.min(100, (winnerData.motivation || 50) + 10) // 勝利でモチベーションアップ
+      })
+      .eq('id', winner);
+  }
 
-  // 敗者の統計更新
-  await supabase
+  // 敗者の統計更新と略実装）
+  const { data: loserData } = await supabase
     .from('players')
-    .update({
-      matches_played: supabase.raw('matches_played + 1'),
-      sets_won: supabase.raw(`sets_won + ${matchState.winner === 2 ? statistics.player1_stats.sets_won : statistics.player2_stats.sets_won}`),
-      sets_lost: supabase.raw(`sets_lost + ${matchState.winner === 2 ? statistics.player2_stats.sets_won : statistics.player1_stats.sets_won}`),
-      experience: supabase.raw(`experience + ${experienceGain}`),
-      physical_fatigue: supabase.raw(`LEAST(100, physical_fatigue + ${fatigueGain})`),
-      mental_fatigue: supabase.raw(`LEAST(100, mental_fatigue + ${fatigueGain})`),
-      motivation: supabase.raw(`GREATEST(10, motivation - 5)`) // 敗北でモチベーション若干ダウン
-    })
-    .eq('id', loser);
+    .select('matches_played, sets_won, sets_lost, experience, physical_fatigue, mental_fatigue, motivation')
+    .eq('id', loser)
+    .single();
+    
+  if (loserData) {
+    await supabase
+      .from('players')
+      .update({
+        matches_played: (loserData.matches_played || 0) + 1,
+        sets_won: (loserData.sets_won || 0) + (matchState.winner === 2 ? statistics.player1_stats.sets_won : statistics.player2_stats.sets_won),
+        sets_lost: (loserData.sets_lost || 0) + (matchState.winner === 2 ? statistics.player2_stats.sets_won : statistics.player1_stats.sets_won),
+        experience: (loserData.experience || 0) + experienceGain,
+        physical_fatigue: Math.min(100, (loserData.physical_fatigue || 0) + fatigueGain),
+        mental_fatigue: Math.min(100, (loserData.mental_fatigue || 0) + fatigueGain),
+        motivation: Math.max(10, (loserData.motivation || 50) - 5) // 敗北でモチベーション若干ダウン
+      })
+      .eq('id', loser);
+  }
 }

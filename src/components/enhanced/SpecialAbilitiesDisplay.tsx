@@ -114,7 +114,7 @@ export function SpecialAbilitiesDisplay({
       case 'legendary': return 5;
       case 'super_rare': return 4;
       case 'rare': return 3;
-      case 'uncommon': return 2;
+      case 'common': return 2;
       default: return 1;
     }
   };

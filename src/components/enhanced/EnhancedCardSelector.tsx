@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Card,
   Zap, 
   Cloud, 
   Sun, 
@@ -146,7 +145,7 @@ export function EnhancedCardSelector({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Card className="text-indigo-500" />
+            <Target className="text-indigo-500" />
             カード選択 ({selectedCards.length}/{maxSelection})
           </h3>
           <div className="flex items-center gap-2 mt-1">
@@ -228,7 +227,12 @@ export function EnhancedCardSelector({
             <ModernCard
               key={card.id}
               variant="pokemon"
-              pokemonType={card.type === 'training' ? 'fighting' : card.type === 'recovery' ? 'normal' : 'psychic'}
+              pokemonType={
+                card.type === 'training' ? 'fighting' : 
+                card.type === 'special' ? 'dragon' : 
+                card.type === 'event' ? 'psychic' : 
+                'normal'
+              }
               className={`
                 relative cursor-pointer transition-all duration-300
                 ${isSelected ? 'ring-4 ring-indigo-300 scale-105' : ''}
@@ -237,8 +241,6 @@ export function EnhancedCardSelector({
               hover={canSelect}
               glowEffect={isSelected}
               onClick={() => canSelect && handleCardClick(card)}
-              onMouseEnter={() => setHoveredCard(card.id)}
-              onMouseLeave={() => setHoveredCard(null)}
             >
               {/* 選択インジケーター */}
               {isSelected && (

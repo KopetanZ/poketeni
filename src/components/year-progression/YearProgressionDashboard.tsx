@@ -79,6 +79,15 @@ export function YearProgressionDashboard() {
   
   const highPriorityEvents = pendingEvents.filter((e: any) => e.priority === 'high');
   const mediumPriorityEvents = pendingEvents.filter((e: any) => e.priority === 'medium');
+  
+  // 簡易統計（ローカルストレージモード）
+  const yearStats = {
+    totalEvents: 0,
+    graduationEvents: 0,
+    newStudentEvents: 0,
+    tournamentEvents: 0,
+    specialEvents: 0
+  };
 
   const handleProcessMonth = async () => {
     const events = await processMonth();

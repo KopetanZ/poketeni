@@ -145,7 +145,14 @@ export function useGameProgressFallback() {
         year: mapData.year,
         totalDays: mapData.total_days,
         panels: mapData.panels,
-        theme: mapData.theme || 'standard'
+        fixedEvents: mapData.fixed_events || [],
+        randomPanelDistribution: mapData.random_panel_distribution || {
+          good_event: 20,
+          bad_event: 15,
+          normal: 50,
+          special_training: 10,
+          character: 5
+        }
       };
       setSeasonMap(map);
     }
@@ -247,7 +254,8 @@ export function useGameProgressFallback() {
         year: map.year,
         total_days: map.totalDays,
         panels: map.panels,
-        theme: map.theme
+        fixed_events: map.fixedEvents,
+        random_panel_distribution: map.randomPanelDistribution
       });
 
     if (error) throw error;

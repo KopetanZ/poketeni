@@ -48,9 +48,10 @@ CREATE TABLE IF NOT EXISTS season_maps (
   -- マップ情報
   total_days INTEGER NOT NULL DEFAULT 365,
   panels JSONB NOT NULL DEFAULT '[]',
+  fixed_events JSONB DEFAULT '[]',
+  random_panel_distribution JSONB DEFAULT '{"good_event": 20, "bad_event": 15, "normal": 50, "special_training": 10, "character": 5}',
   
-  -- マップ設定
-  theme VARCHAR(50) DEFAULT 'standard',
+  -- マップ設定  
   difficulty_modifier DECIMAL(3,2) DEFAULT 1.0,
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -94,7 +95,7 @@ CREATE INDEX IF NOT EXISTS idx_game_progress_user ON game_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_game_progress_date ON game_progress(current_year, current_month, current_day);
 
 CREATE INDEX IF NOT EXISTS idx_season_maps_school_year ON season_maps(school_id, year);
-CREATE INDEX IF NOT EXISTS idx_season_maps_theme ON season_maps(theme);
+CREATE INDEX IF NOT EXISTS idx_season_maps_difficulty ON season_maps(difficulty_modifier);
 
 CREATE INDEX IF NOT EXISTS idx_event_history_school ON event_history(school_id);
 CREATE INDEX IF NOT EXISTS idx_event_history_date ON event_history(event_date DESC);

@@ -172,7 +172,7 @@ export function CardGameBoard({
         oldDate: { month: gameProgress.currentMonth, day: gameProgress.currentDay },
         newDate: { month: newDate.month, day: newDate.day },
         cardUsed: selectedCard.name,
-        userId: user.id,
+        userId: user?.id || 'unknown',
         useLocalStorage
       });
       await updateSchoolDate(newDate.month, newDate.day);

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { generateInitialTeam } from '@/lib/player-generator';
+import { StorageFallback } from '@/lib/storage-fallback';
+import { checkTableExists } from '@/lib/database-setup';
 import type { GameProgress, SeasonMap, MapPanel } from '@/types/card-system';
 
 interface GameProgressData {

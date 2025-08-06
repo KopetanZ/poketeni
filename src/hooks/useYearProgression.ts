@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { StorageFallback } from '@/lib/storage-fallback';
 import { 
   processMonthlyProgression,
   executeYearProgressionEvent,
@@ -41,7 +42,18 @@ export function useYearProgression() {
         .single();
 
       if (error) throw error;
-      setCurrentSchool(data);
+      
+      // ローカルストレージの日付も確認してマージ
+      const localDate = StorageFallback.loadSchoolDate(user.id);
+      const mergedData = {
+        ...data,
+        ...(localDate && {
+          current_month: localDate.current_month,
+          current_day: localDate.current_day
+        })
+      };
+      
+      setCurrentSchool(mergedData);
 
       // 年度進行統計を読み込み
       const stats = await getYearProgressionStats(data.id);

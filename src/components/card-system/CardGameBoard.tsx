@@ -9,9 +9,10 @@ import { EventModal } from './EventModal';
 import { TrainingCard } from './TrainingCard';
 import { CardGenerator } from '@/lib/card-system/card-generator';
 import { MapGenerator } from '@/lib/card-system/map-generator';
-import { useGameProgress } from '@/hooks/useGameProgress';
+import { useGameProgressFallback } from '@/hooks/useGameProgressFallback';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { StorageFallback } from '@/lib/storage-fallback';
 import type { 
   TrainingCard as TrainingCardType, 
   CardHand as CardHandType, 
@@ -33,17 +34,18 @@ export function CardGameBoard({
 }: CardGameBoardProps) {
   const { user } = useAuth();
   
-  // Supabaseとの連携
+  // Supabaseとの連携（フォールバック対応）
   const {
     gameProgress: savedGameProgress,
     seasonMap: savedSeasonMap,
     loading: progressLoading,
     error: progressError,
+    useLocalStorage,
     saveGameProgress,
     saveSeasonMap,
     recordEvent,
     initializeGameProgress
-  } = useGameProgress();
+  } = useGameProgressFallback();
 
   // ローカル状態
   const [gameProgress, setGameProgress] = useState<GameProgress | null>(null);
@@ -304,15 +306,23 @@ export function CardGameBoard({
     if (!user) return;
     
     try {
-      const { error } = await supabase
-        .from('schools')
-        .update({
-          current_month: month,
-          current_day: day
-        })
-        .eq('user_id', user.id);
+      if (useLocalStorage) {
+        // ローカルストレージに保存
+        StorageFallback.updateSchoolDate(user.id, month, day);
+        console.log('School date updated in localStorage:', { month, day });
+      } else {
+        // データベースに保存
+        const { error } = await supabase
+          .from('schools')
+          .update({
+            current_month: month,
+            current_day: day
+          })
+          .eq('user_id', user.id);
 
-      if (error) throw error;
+        if (error) throw error;
+        console.log('School date updated in database:', { month, day });
+      }
     } catch (error) {
       console.error('Error updating school date:', error);
     }

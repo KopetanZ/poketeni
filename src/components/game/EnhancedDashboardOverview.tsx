@@ -22,14 +22,14 @@ import {
 import { CardGameBoard } from '../card-system/CardGameBoard';
 import { usePlayerData } from '@/hooks/usePlayerData';
 import { useMatchData } from '@/hooks/useMatchData';
-import { useYearProgression } from '@/hooks/useYearProgression';
+import { useYearProgressionLocal } from '@/hooks/useYearProgressionLocal';
 import { getPokemonImageUrl } from '@/lib/pokemon-api';
 import Link from 'next/link';
 
 export function EnhancedDashboardOverview() {
   const { players, loading: playersLoading, getPlayerStats, getTopPlayers } = usePlayerData();
   const { getMatchStatistics } = useMatchData();
-  const { currentSchool, getMonthName } = useYearProgression();
+  const { currentSchool, getMonthName } = useYearProgressionLocal();
   const [activeTab, setActiveTab] = useState<'overview' | 'team' | 'stats'>('overview');
 
   const playerStats = getPlayerStats();

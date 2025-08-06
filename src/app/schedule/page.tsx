@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { GameLayout } from '@/components/layout/GameLayout';
 import { useAuth } from '@/context/AuthContext';
-import { useYearProgression } from '@/hooks/useYearProgression';
+import { useYearProgressionLocal } from '@/hooks/useYearProgressionLocal';
 import { Calendar, Trophy, Users, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -18,7 +18,7 @@ interface ScheduleEvent {
 
 export default function SchedulePage() {
   const { user } = useAuth();
-  const { currentSchool, getMonthName } = useYearProgression();
+  const { currentSchool, getMonthName } = useYearProgressionLocal();
   const [events, setEvents] = useState<ScheduleEvent[]>([]);
 
   useEffect(() => {

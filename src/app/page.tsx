@@ -6,13 +6,13 @@ import { GameLayout } from '@/components/layout/GameLayout';
 import { EnhancedDashboardOverview } from '@/components/game/EnhancedDashboardOverview';
 import { YearProgressionDashboard } from '@/components/year-progression/YearProgressionDashboard';
 import { useAuth } from '@/context/AuthContext';
-import { useYearProgression } from '@/hooks/useYearProgression';
+import { useYearProgressionLocal } from '@/hooks/useYearProgressionLocal';
 import { motion } from 'framer-motion';
 
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { currentSchool, getMonthName } = useYearProgression();
+  const { currentSchool, getMonthName } = useYearProgressionLocal();
 
   useEffect(() => {
     if (!loading && !user) {

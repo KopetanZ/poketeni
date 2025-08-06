@@ -17,25 +17,19 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { YearProgressionModal } from './YearProgressionModal';
-import { useYearProgression } from '@/hooks/useYearProgression';
+import { useYearProgressionLocal } from '@/hooks/useYearProgressionLocal';
 
 export function YearProgressionDashboard() {
   const {
     currentSchool,
     pendingEvents,
-    yearStats,
     loading,
     error,
     isProcessing,
     processMonth,
     executeEvent,
-    advanceMonth,
-    getSchoolProgress,
-    getMonthName,
-    getGradeString,
-    getEventsByPriority,
-    YEAR_SETTINGS
-  } = useYearProgression();
+    getMonthName
+  } = useYearProgressionLocal();
 
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 

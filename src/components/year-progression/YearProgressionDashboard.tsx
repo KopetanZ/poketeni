@@ -67,9 +67,15 @@ export function YearProgressionDashboard() {
     );
   }
 
-  const schoolProgress = getSchoolProgress();
-  const highPriorityEvents = getEventsByPriority('high');
-  const mediumPriorityEvents = getEventsByPriority('medium');
+  // 簡易的な進行状況（ローカルストレージモード）
+  const schoolProgress = {
+    totalMonths: 36, // 3年 x 12ヶ月
+    currentMonth: ((currentSchool?.current_year || 1) - 1) * 12 + (currentSchool?.current_month || 4),
+    progressPercentage: Math.round((((currentSchool?.current_year || 1) - 1) * 12 + (currentSchool?.current_month || 4)) / 36 * 100)
+  };
+  
+  const highPriorityEvents = pendingEvents.filter((e: any) => e.priority === 'high');
+  const mediumPriorityEvents = pendingEvents.filter((e: any) => e.priority === 'medium');
 
   const handleProcessMonth = async () => {
     const events = await processMonth();
@@ -79,7 +85,7 @@ export function YearProgressionDashboard() {
   };
 
   const handleAdvanceMonth = async () => {
-    await advanceMonth();
+    console.log('Month advancement disabled in localStorage mode');
   };
 
   return (
@@ -92,7 +98,7 @@ export function YearProgressionDashboard() {
             <div>
               <h2 className="text-2xl font-bold">年度進行管理</h2>
               <p className="text-blue-100 mt-1">
-                {currentSchool.name} - {getGradeString(currentSchool.current_year)}
+                {currentSchool.name} - {currentSchool.current_year}年目
               </p>
             </div>
             <div className="text-right">
@@ -100,7 +106,7 @@ export function YearProgressionDashboard() {
                 {getMonthName(currentSchool.current_month)}
               </div>
               <div className="text-sm text-blue-100">
-                {currentSchool.current_year}/{YEAR_SETTINGS.totalYears}年目
+                {currentSchool.current_year}/3年目
               </div>
             </div>
           </div>

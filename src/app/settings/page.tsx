@@ -270,13 +270,13 @@ export default function SettingsPage() {
                   <div key={key} className="space-y-2">
                     <div className="flex justify-between">
                       <label className="text-sm font-medium">{label}</label>
-                      <span className="text-sm text-gray-600">{settings[key as keyof typeof settings]}%</span>
+                      <span className="text-sm text-gray-600">{settings[key as keyof typeof settings] as number}%</span>
                     </div>
                     <input
                       type="range"
                       min="0"
                       max="100"
-                      value={settings[key as keyof typeof settings]}
+                      value={settings[key as keyof typeof settings] as number}
                       onChange={(e) => handleSettingChange(key, parseInt(e.target.value))}
                       className="w-full"
                     />
